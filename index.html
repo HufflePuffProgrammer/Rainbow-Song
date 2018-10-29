@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Firebase 1</title>
+
+  <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase.js"></script>
+  <script>
+  <!-- Firebase -->
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCSoz5S9WyFoc7Ht9tDyatuIO9DO2tV91c",
+    authDomain: "first-project-1fa36.firebaseapp.com",
+    databaseURL: "https://first-project-1fa36.firebaseio.com",
+    projectId: "first-project-1fa36",
+    storageBucket: "first-project-1fa36.appspot.com",
+    messagingSenderId: "897445849942"
+  };
+  firebase.initializeApp(config);
+  var database = firebase.database();
+  var ref = database.ref('scores');
+  ref.on('value',gotData, errData);
+
+  function gotData(data) {
+    var scores = data.val();
+    var keys = Object.keys(scores);
+
+   for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      var fruit = scores[k].fruit;
+      var total = scores[k].total;
+      var li = document.createElement('li');
+
+      li.innerHTML = fruit + " : " + total + " key: " + k;
+      document.getElementById("scorelist").appendChild(li);
+    }
+  }
+
+  function errData(err) {
+    console.log('Error!');
+    console.log(err);
+  }
+
+  function submitTotal() {
+    var inputFruit = document.getElementById("inputFruit");
+    var inputTotal = document.getElementById("inputTotal");
+
+    var data = {
+      fruit: inputFruit.value,
+      total: inputTotal.value
+    }
+    var ref = database.ref('scores');
+    var newdata = ref.push(data, finished);
+    console.log(newdata.key);
+    console.log("pushed");
+  }
+  function finished(err) {
+    if (err) {
+      console.log("ooops, something went wrong.");
+      console.log(err);
+    } else {
+      console.log('Data saved successfully');
+    }
+  }
+</script>
+    <style>
+      body {
+        padding: 20px;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <h1>Richard's Javascript : Saving and Listing data from Firebase</h1>
+
+    <div id="game">
+    </div>
+    <p>
+      <ol id="scorelist">
+      </ol>
+      fruit: <input id="inputFruit"></input><br/>
+      total: <input id="inputTotal"></input><br/><br/>
+      <button type="submit" onclick="submitTotal()">submit</button>
+    </p>
+
+    <p id="data"></p>
+
+
+  </body>
+</html>
